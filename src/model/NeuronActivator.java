@@ -13,12 +13,12 @@ public class NeuronActivator implements Activator
         double sum = 0;
         for (Input input : inputs)
         {
-            sum += input.getValue();
+            sum += input.getValueDependsOnWeight();
         }
         
 //        sum = Math.atan(sum);
-//        sum = 1/(1 + Math.exp(-sum));
-        sum = Math.exp(sum)/(1+Math.exp(sum));
+        sum = 1/(1 + Math.exp(-sum));
+//        sum = Math.exp(sum)/(1+Math.exp(sum));
         return sum;
         
     }
@@ -29,7 +29,7 @@ public class NeuronActivator implements Activator
         double sum = 0;
         for (Input input : inputs)
         {
-            sum += input.getValue();
+            sum += input.getValueDependsOnWeight();
         }
         
         sum = Math.exp(sum) / ( (1+Math.exp(sum))*(1+Math.exp(sum)) );

@@ -1,7 +1,7 @@
 package model;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -11,19 +11,23 @@ public class Network
 {
     private Neuron neuronX = new Neuron();
     private Neuron neuronY = new Neuron();
-    private Neuron last = new Neuron();
+    private Neuron lastW = new Neuron();
+    private Neuron lastB = new Neuron();
     private List<Neuron> layer = new ArrayList<Neuron>();
+    private List<TeachPoint> teachPoints = new ArrayList<>();
     
     public Network()
     {
         Activator activator = new NeuronActivator();
         Activator outputActivator= new OutputActivator();
-        last.setActivator(activator);
+        lastW.setActivator(outputActivator);
+        lastB.setActivator(outputActivator);
         Neuron bias = new Neuron();
         bias.setActivator(new BiasActivator());
-        last.addInput(bias, new Random().nextDouble());
-        
-        
+        bias.active();
+        lastW.addInput(bias, new Random().nextDouble());
+        lastB.addInput(bias, new Random().nextDouble());
+
         Random random = new Random();
         for(int i = 0; i < 20; i++)
         {
@@ -32,12 +36,13 @@ public class Network
             neuron.addInput(neuronY, (-1 + random.nextDouble() * 2));
             neuron.addInput(bias, (-1 + random.nextDouble() * 2));
             neuron.setActivator(activator);
-            last.addInput(neuron, random.nextDouble());
+            lastW.addInput(neuron, random.nextDouble());
+            lastB.addInput(neuron, random.nextDouble());
             layer.add(neuron);
         }        
     }
     
-    public double calculate(double x, double y)
+    public void calculate(double x, double y)
     {
         neuronX.setOutput(x);
         neuronY.setOutput(y);
@@ -45,32 +50,59 @@ public class Network
         {
             neuron.active();
         }
-        last.active();
-        double result = last.getOutput();
-        return result;
+        lastW.active();
+        lastB.active();
+    }
+
+    public double getResultW()
+    {
+        return lastW.getOutput();
+    }
+    public double getResultB()
+    {
+        return lastB.getOutput();
     }
     
-    public void teach(double x, double y, double result)
+    public void teach()
     {
-        double beta = 0.1;
-        for(int i = 0; i< 1000; i++)
-        {
-            double calculated = calculate(x, y);
-            double lastError = last.activateDeriv() * (result - calculated);
-            System.out.println(calculated);
-            for(Input input: last.getInputs())
-            {
-                double lastWeight = input.getWeight();
-                input.setWeight(input.getWeight() + beta * lastError * input.getInput());
-                Neuron currentNeuron = input.getNeuron();
-                double currentNeuronLastError = currentNeuron.activateDeriv() * lastWeight * lastError;
-                for(Input currentNeuronInput: currentNeuron.getInputs())
-                {
-                    currentNeuronInput.setWeight(currentNeuronInput.getWeight() + beta * currentNeuronLastError * input.getInput());
+        double beta = 0.006;
+        for(int i =0; i< 10000; i++) {
+            Collections.shuffle(teachPoints);
+            TeachPoint teachPoint = teachPoints.get(0);
+            calculate(teachPoint.getX(), teachPoint.getY());
+            double calculatedW = getResultW();
+            double calculatedB = getResultB();
+            lastW.setErrorRate(lastW.activateDeriv() * (teachPoint.getResultW() - calculatedW));
+            lastB.setErrorRate(lastB.activateDeriv() * (teachPoint.getResultB() - calculatedB));
+            System.out.println(String.format("calculatedW: %s, calculatedB: %s, resultW: %s resultB: %s", calculatedW, calculatedB, teachPoint.getResultW(), teachPoint.getResultB()));
+
+            for (Input inputW : lastW.getInputs()) {
+                for(Input inputB: lastB.getInputs()){
+                    if(inputW.getNeuron() == inputB.getNeuron()){
+                        Neuron currentNeuron = inputW.getNeuron();
+                        currentNeuron.setErrorRate(currentNeuron.activateDeriv() * (inputW.getInfluenceFactor() + inputB.getInfluenceFactor()));
+                    }
                 }
-                
+            }
+
+            for(Neuron neuron:layer)
+            {
+                for(Input input: neuron.getInputs()){
+                    input.setWeight(input.getWeight() + (beta * neuron.getErrorRate() * input.getInputValue()));
+                }
+            }
+            for (Input input : lastW.getInputs()) {
+                input.setWeight(input.getWeight() + beta * lastW.getErrorRate() * input.getInputValue());
+            }
+            for (Input input : lastB.getInputs()) {
+                input.setWeight(input.getWeight() + beta * lastB.getErrorRate() * input.getInputValue());
             }
         }
+    }
+
+    public void addTeachPoint(double x ,double y, double resultW, double resultB)
+    {
+        teachPoints.add(new TeachPoint(x, y, resultW, resultB));
     }
 
 

@@ -3,17 +3,24 @@ package model;
 public class Input
 {
     private Neuron neuron;
+    private Neuron parentNeuron;
     private double weight;
     
-    public Input(Neuron neuron, double weight)
+    public Input(Neuron neuron, double weight, Neuron parentNeuron)
     {
         super();
         this.neuron = neuron;
         this.weight = weight;
+        this.parentNeuron = parentNeuron;
     }
 
-    public double getValue(){
+    public double getValueDependsOnWeight(){
         return weight * neuron.getOutput();
+    }
+
+    public double getInfluenceFactor()
+    {
+        return parentNeuron.getErrorRate() * weight;
     }
     
     public double getWeight()
@@ -33,9 +40,11 @@ public class Input
     {
         return neuron;
     }
-    public double getInput()
+    public double getInputValue()
     {
         return neuron.getOutput();
     }
-    
+    public Neuron getParentNeuron() {
+        return parentNeuron;
+    }
 }

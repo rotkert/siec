@@ -10,6 +10,7 @@ public class Neuron
     private List<Input> inputs;
     private Activator activator;
     private double output;
+    private double errorRate;
     
     public Neuron()
     {
@@ -35,7 +36,7 @@ public class Neuron
     
     public void addInput(Neuron neuron, double weight)
     {
-        inputs.add(new Input(neuron, weight));
+        inputs.add(new Input(neuron, weight, this));
     }
     
     public void setOutput(double output)
@@ -51,9 +52,10 @@ public class Neuron
     {
         this.activator = activator;
     }
-    
-    
-    
-    
-    
+    public double getErrorRate() {
+        return errorRate;
+    }
+    public void setErrorRate(double errorRate) {
+        this.errorRate = errorRate;
+    }
 }

@@ -13,7 +13,7 @@ public class OutputActivator implements Activator
         double sum = 0;
         for (Input input : inputs)
         {
-            sum += input.getValue();
+            sum += input.getValueDependsOnWeight();
         }
         
         

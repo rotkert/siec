@@ -26,7 +26,8 @@ public class BoardPanel extends JPanel
     {
         for (MyPoint point : points)
         {
-           point.result = mainFrame.network.calculate(point.x, point.y);
+           mainFrame.network.calculate(point.x, point.y);
+           point.result = mainFrame.network.getResultW() > mainFrame.network.getResultB() ? 1 : 0;
         }
         repaint();
     }
