@@ -39,15 +39,14 @@ public class TrainPanel extends JPanel implements MouseListener
             resultW = 0;
             resultB = 1;
         }
-        
-        x /= 5;
-        y /= 5;
+        x /= 8;
+        y /= 8;
         System.out.println(x + " " + y);
         
         double newx = (double) x / 100; 
         double newy = (double) y / 100; 
         mainFrame.network.addTeachPoint(x, y, resultW, resultB);
-        points.add(new MyPoint(x*5, y*5, resultW));
+        points.add(new MyPoint(x*8, y*8, resultW));
         repaint();
 
     }
@@ -62,9 +61,7 @@ public class TrainPanel extends JPanel implements MouseListener
     @Override
     public void mouseExited(MouseEvent arg0)
     {
-        System.out.println("uczenie");
-        mainFrame.network.teach();
-        mainFrame.run();
+        
 
     }
 
@@ -87,7 +84,6 @@ public class TrainPanel extends JPanel implements MouseListener
     {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(5));
         
        
         for (MyPoint point : points)
@@ -96,8 +92,14 @@ public class TrainPanel extends JPanel implements MouseListener
                 g2.setColor(Color.white);
             else
                 g2.setColor(Color.black);
-            g2.drawRect(point.x, point.y, 5, 5);
+            g2.fillRect(point.x, point.y, 8, 8);
         }
+    }
+    
+    void newNetwork()
+    {
+        points.clear();
+        repaint();
     }
 
 }

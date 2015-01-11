@@ -16,9 +16,9 @@ public class BoardPanel extends JPanel
     public BoardPanel(MainFrame mainFrame)
     {
         this.mainFrame = mainFrame;
-        for (int i = 0; i < 1600; i++)
+        for (int i = 0; i < 3600; i++)
         {
-            points.add(new MyPoint(i % 40, i / 40, 1));
+            points.add(new MyPoint(i % 60, i / 60, 1));
         }
     }
     
@@ -32,11 +32,19 @@ public class BoardPanel extends JPanel
         repaint();
     }
     
+    void newNetwork()
+    {
+        for (MyPoint point : points)
+        {
+            point.result = 1;
+        }
+        repaint();
+    }
+    
     protected void paintComponent(Graphics g)
     {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(5));
         
         for (MyPoint point : points)
         {
@@ -44,7 +52,7 @@ public class BoardPanel extends JPanel
                     g2.setColor(Color.white);
                 else
                     g2.setColor(Color.black);
-                g2.drawRect(point.x*5, point.y*5, 5, 5);
+                g2.fillRect(point.x*8, point.y*8, 8, 8);
         }
     }
     
