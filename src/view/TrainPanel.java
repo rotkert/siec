@@ -27,27 +27,7 @@ public class TrainPanel extends JPanel implements MouseListener
     @Override
     public void mouseClicked(MouseEvent arg0)
     {
-        int x = arg0.getX();
-        int y = arg0.getY();
-        double resultW, resultB;
-        if(arg0.getButton() == MouseEvent.BUTTON1)
-        {
-            resultW = 1;
-            resultB = 0;
-        }
-        else{
-            resultW = 0;
-            resultB = 1;
-        }
-        x /= 8;
-        y /= 8;
-        System.out.println(x + " " + y);
-        
-        double newx = (double) x / 100; 
-        double newy = (double) y / 100; 
-        mainFrame.network.addTeachPoint(x, y, resultW, resultB);
-        points.add(new MyPoint(x*8, y*8, resultW));
-        repaint();
+
 
     }
 
@@ -69,7 +49,27 @@ public class TrainPanel extends JPanel implements MouseListener
     public void mousePressed(MouseEvent arg0)
     {
         // TODO Auto-generated method stub
-        
+        int x = arg0.getX();
+        int y = arg0.getY();
+        double resultW, resultB;
+        if(arg0.getButton() == MouseEvent.BUTTON1)
+        {
+            resultW = 1;
+            resultB = 0;
+        }
+        else{
+            resultW = 0;
+            resultB = 1;
+        }
+        x /= 8;
+        y /= 8;
+        System.out.println(x + " " + y);
+
+        double newx = (double) x / 100;
+        double newy = (double) y / 100;
+        mainFrame.network.addTeachPoint(x, y, resultW, resultB);
+        points.add(new MyPoint(x*8, y*8, resultW));
+        repaint();
     }
 
     @Override

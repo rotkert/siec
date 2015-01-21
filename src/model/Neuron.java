@@ -8,6 +8,7 @@ import model.interfaces.Activator;
 public class Neuron
 {
     private List<Input> inputs;
+    private List<Input> forwardInputs;
     private Activator activator;
     private double output;
     private double errorRate;
@@ -15,6 +16,7 @@ public class Neuron
     public Neuron()
     {
         inputs = new ArrayList<Input>();
+        forwardInputs = new ArrayList<Input>();
     }
     
     public void active()
@@ -36,7 +38,9 @@ public class Neuron
     
     public void addInput(Neuron neuron, double weight)
     {
-        inputs.add(new Input(neuron, weight, this));
+        Input input = new Input(neuron, weight, this);
+        inputs.add(input);
+        neuron.addForwardInput(input);
     }
     
     public void setOutput(double output)
@@ -57,5 +61,13 @@ public class Neuron
     }
     public void setErrorRate(double errorRate) {
         this.errorRate = errorRate;
+    }
+    public void addForwardInput(Input input)
+    {
+        forwardInputs.add(input);
+    }
+
+    public List<Input> getForwardInputs() {
+        return forwardInputs;
     }
 }
