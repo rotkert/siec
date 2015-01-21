@@ -14,26 +14,20 @@ public class Network
     public static final int OUTPUT_W= 0;
     public static final int OUTPUT_B= 1;
 
-//    private Neuron neuronX = new Neuron();
-//    private Neuron neuronY = new Neuron();
-//    private Neuron lastW = new Neuron();
-//    private Neuron lastB = new Neuron();
+    private double beta;
     private List<Layer> layers = new ArrayList<>();
-    private List<TeachPoint> teachPoints = Collections.synchronizedList(new ArrayList<>());
+    private List<TeachPoint> teachPoints = Collections.synchronizedList(new ArrayList<TeachPoint>());
     private Random random = new Random();
 
 
-    public Network(int layersCount, int neuronsPerLayer)
+    public Network(int layersCount, int neuronsPerLayer, double beta)
     {
+        this.beta = beta;
         Activator activator = new NeuronActivator();
         Activator outputActivator= new OutputActivator();
-//        lastW.setActivator(outputActivator);
-//        lastB.setActivator(outputActivator);
         Neuron bias = new Neuron();
         bias.setActivator(new BiasActivator());
         bias.active();
-//        lastW.addInput(bias, new Random().nextDouble());
-//        lastB.addInput(bias, new Random().nextDouble());
 
         //input layer
         Layer firstLayer = new Layer();
@@ -99,56 +93,45 @@ public class Network
     public void teach()
     {
         if(teachPoints.size() == 0 ) return;
-        double beta = 0.006;
-        for(int i = 0; i < 1; i++) {
+        
+        for(int i = 0; i < 1000; i++) {
             TeachPoint teachPoint = teachPoints.get(random.nextInt(teachPoints.size()));
 
             calculate(teachPoint.getX(), teachPoint.getY());
             double calculatedW = getResultW();
             double calculatedB = getResultB();
+            //obliczenie bledu wyjsc
             getOutputW().setErrorRate(getOutputW().activateDeriv() * (teachPoint.getResultW() - calculatedW));
             getOutputB().setErrorRate(getOutputB().activateDeriv() * (teachPoint.getResultB() - calculatedB));
 
-//            for (Input inputW : lastW.getInputs()) {
-//                for (Input inputB : lastB.getInputs()) {
-//                    if (inputW.getNeuron() == inputB.getNeuron()) {
-//                        Neuron currentNeuron = inputW.getNeuron();
-//                        currentNeuron.setErrorRate(currentNeuron.activateDeriv() * (inputW.getInfluenceFactor() + inputB.getInfluenceFactor()));
-//                    }
-//                }
-//            }
-
-            for (int currentLayerNumber = (layers.size() - 2); currentLayerNumber > 0; currentLayerNumber--) {
-                for (Neuron neuron : layers.get(currentLayerNumber).getNeurons()) {
+            //obliczenie bledu pozostalych neuronow
+            for (int currentLayerNumber = (layers.size() - 2); currentLayerNumber > 0; currentLayerNumber--) 
+            {
+                for (Neuron neuron : layers.get(currentLayerNumber).getNeurons()) 
+                {
                     double error = 0;
-                    for (Input forwardInput : neuron.getForwardInputs()) {
+                    for (Input forwardInput : neuron.getForwardInputs()) 
+                    {
                         error += forwardInput.getInfluenceFactor();
                     }
                     neuron.setErrorRate(neuron.activateDeriv() * error);
                 }
 
             }
-
-            for (int currentLayerNumber = 1; currentLayerNumber < layers.size(); currentLayerNumber++) {
-                for (Neuron neuron : layers.get(currentLayerNumber).getNeurons()) {
-                    for (Input input : neuron.getInputs()) {
+            
+            //aktualizacja wag
+            for (int currentLayerNumber = 1; currentLayerNumber < layers.size(); currentLayerNumber++) 
+            {
+                for (Neuron neuron : layers.get(currentLayerNumber).getNeurons()) 
+                {
+                    for (Input input : neuron.getInputs()) 
+                    {
                         input.setWeight(input.getWeight() + beta * neuron.getErrorRate() * input.getInputValue());
                     }
                 }
 
             }
         }
-//            for (Neuron neuron : layer) {
-//                for (Input input : neuron.getInputs()) {
-//                    input.setWeight(input.getWeight() + (beta * neuron.getErrorRate() * input.getInputValue()));
-//                }
-//            }
-//            for (Input input : lastW.getInputs()) {
-//                input.setWeight(input.getWeight() + beta * lastW.getErrorRate() * input.getInputValue());
-//            }
-//            for (Input input : lastB.getInputs()) {
-//                input.setWeight(input.getWeight() + beta * lastB.getErrorRate() * input.getInputValue());
-//            }
     }
 
     public void addTeachPoint(double x ,double y, double resultW, double resultB)
