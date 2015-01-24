@@ -14,15 +14,13 @@ public class Network
     public static final int OUTPUT_W= 0;
     public static final int OUTPUT_B= 1;
 
-    private double beta;
     private List<Layer> layers = new ArrayList<>();
     private List<TeachPoint> teachPoints = Collections.synchronizedList(new ArrayList<TeachPoint>());
     private Random random = new Random();
 
 
-    public Network(int layersCount, int neuronsPerLayer, double beta)
+    public Network(int layersCount, int neuronsPerLayer)
     {
-        this.beta = beta;
         Activator activator = new NeuronActivator();
         Activator outputActivator= new OutputActivator();
         Neuron bias = new Neuron();
@@ -90,7 +88,7 @@ public class Network
         return getLastLayer().get(OUTPUT_B).getOutput();
     }
     
-    public void teach()
+    public void teach(double beta)
     {
         if(teachPoints.size() == 0 ) return;
         

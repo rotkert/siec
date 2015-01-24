@@ -58,7 +58,11 @@ public class MainFrame extends JFrame
         
         getContentPane().add(panel_1, BorderLayout.NORTH);
         panel_1.setLayout(new GridLayout(0, 10, 0, 0));
+        btnNewButton.setForeground(Color.LIGHT_GRAY);
+        btnNewButton.setBackground(Color.DARK_GRAY);
         panel_1.add(btnNewButton);
+        btnNewButton_2.setForeground(Color.LIGHT_GRAY);
+        btnNewButton_2.setBackground(Color.DARK_GRAY);
         panel_1.add(btnNewButton_2);
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel.setForeground(Color.LIGHT_GRAY);
@@ -82,7 +86,7 @@ public class MainFrame extends JFrame
         
         panel_1.add(spinner_2);
         
-        network = new Network((Integer)spinner.getValue(), (Integer)spinner_1.getValue(), (Double)spinner_2.getNextValue());
+        network = new Network((Integer)spinner.getValue(), (Integer)spinner_1.getValue());
         
         btnNewButton.addActionListener(new ActionListener()
         {
@@ -92,14 +96,14 @@ public class MainFrame extends JFrame
             {
                 // TODO Auto-generated method stub
                 System.out.println("uczenie");
-                network.teach();
+                network.teach((Double)spinner_2.getNextValue());
                 run();
                 timer = new Timer();
                 timer.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
                         loops = (loops + 1) % 40;
-                        network.teach();
+                        network.teach((Double)spinner_2.getNextValue());
                         if(loops == 0)
                             boardPanel.run();
                     }
@@ -119,7 +123,7 @@ public class MainFrame extends JFrame
                     timer.cancel();
                     timer.purge();
                 }
-                network = new Network((Integer)spinner.getValue(), (Integer)spinner_1.getValue(), (Double)spinner_2.getNextValue());
+                network = new Network((Integer)spinner.getValue(), (Integer)spinner_1.getValue());
                 trainPanel.newNetwork();
                 boardPanel.newNetwork();
             }
