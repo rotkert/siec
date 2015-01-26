@@ -41,6 +41,7 @@ public class MainFrame extends JFrame
     private final JLabel lblNewLabel_1 = new JLabel("Neurony");
     private final JLabel lblNewLabel_2 = new JLabel("Beta");
     private Timer timer;
+    private boolean teaching = false;
     
     public MainFrame()
     {
@@ -95,19 +96,22 @@ public class MainFrame extends JFrame
             public void actionPerformed(ActionEvent arg0)
             {
                 // TODO Auto-generated method stub
-                System.out.println("uczenie");
-                network.teach((Double)spinner_2.getNextValue());
-                run();
-                timer = new Timer();
-                timer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        loops = (loops + 1) % 40;
-                        network.teach((Double)spinner_2.getNextValue());
-                        if(loops == 0)
-                            boardPanel.run();
-                    }
-                }, 0, 25);
+                if(!teaching) {
+                    teaching = true;
+                    System.out.println("uczenie");
+                    network.teach((Double) spinner_2.getNextValue());
+                    run();
+                    timer = new Timer();
+                    timer.scheduleAtFixedRate(new TimerTask() {
+                        @Override
+                        public void run() {
+                            loops = (loops + 1) % 40;
+                            network.teach((Double) spinner_2.getNextValue());
+                            if (loops == 0)
+                                boardPanel.run();
+                        }
+                    }, 0, 25);
+                }
 
             }
         });
@@ -117,6 +121,7 @@ public class MainFrame extends JFrame
             @Override
             public void actionPerformed(ActionEvent arg0)
             {
+                teaching = false;
                 // TODO Auto-generated method stub
                 if(timer != null)
                 {
@@ -132,6 +137,7 @@ public class MainFrame extends JFrame
         setBounds(300, 200, 992, 551);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
+        setTitle("Puszek");
     }
     
     void run()

@@ -26,7 +26,7 @@ public class BoardPanel extends JPanel
     {
         for (MyPoint point : points)
         {
-           mainFrame.network.calculate(point.x, point.y);
+           mainFrame.network.calculate(point.x/20 -1, point.y/20 -1);
            point.result = mainFrame.network.getResultW() > mainFrame.network.getResultB() ? 1 : 0;
         }
         repaint();
@@ -52,7 +52,7 @@ public class BoardPanel extends JPanel
                     g2.setColor(Color.white);
                 else
                     g2.setColor(Color.black);
-                g2.fillRect(point.x*8, point.y*8, 8, 8);
+                g2.fillRect((int) point.x*8, (int)point.y*8, 8, 8);
         }
     }
     

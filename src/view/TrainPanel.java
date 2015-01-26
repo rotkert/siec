@@ -92,7 +92,7 @@ public class TrainPanel extends JPanel implements MouseListener
                 g2.setColor(Color.white);
             else
                 g2.setColor(Color.black);
-            g2.fillRect(point.x, point.y, 8, 8);
+            g2.fillRect((int)point.x, (int)point.y, 8, 8);
         }
     }
     

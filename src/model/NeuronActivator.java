@@ -17,8 +17,6 @@ public class NeuronActivator implements Activator
         }
         
         sum = Math.atan(sum);
-//        sum = 1/(1 + Math.exp(-sum));
-//        sum = Math.exp(sum)/(1+Math.exp(sum));
         return sum;
         
     }

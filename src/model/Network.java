@@ -134,7 +134,7 @@ public class Network
 
     public void addTeachPoint(double x ,double y, double resultW, double resultB)
     {
-        teachPoints.add(new TeachPoint(x, y, resultW, resultB));
+        teachPoints.add(new TeachPoint(x/20 -1, y/20 -1, resultW, resultB));
     }
 
     private void setNetworkInput(double x, double y)
